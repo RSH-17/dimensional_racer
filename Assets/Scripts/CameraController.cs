@@ -43,13 +43,10 @@ public class CameraController : MonoBehaviour
             );            
             transform.position = _player.transform.position + triVec;
             transform.LookAt(_player.transform.position);
+            // transform.rotation = Quaternion.Euler(25, 0, 0);
 
-            // angVec = new Vector3(
-            //     25,
-            //     (-1) * hypo * (float)Math.Sin(rad),
-            //     0
-            // );
-            // transform.rotation = Quaternion.Euler(angVec);
+            // if (Input.GetButton("Yaw"))
+            //     transform.Rotate(0, Input.GetAxisRaw("Yaw") * (-1.0f) * Time.deltaTime, 0);
         }        
     }
 }

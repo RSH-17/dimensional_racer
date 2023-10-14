@@ -6,36 +6,22 @@ using UnityEngine;
 
 public class AirplaneController : MonoBehaviour
 {
-    public float rollAmount;
-    public float pitchAmount;
-    public float yawAmount;
+    Rigidbody rb;
+
+    public float rollAmount; // 뒤집기
+    public float pitchAmount; // 앞뒤
+    public float yawAmount; // 좌우
+
     public float speed;
     public float lerpAmount;
-
-    Vector3 rotateValue;
-    Rigidbody rb;
 
     float pitchValue;
     float yawValue;
     float rollValue;
+    Vector3 rotateValue;
 
-    void MoveAircraft()
-    {
-        // Vector3 lerpVector = new Vector3(pitchValue * pitchAmount, yawValue * rollAmount, rollValue * rollAmount);
-        Vector3 lerpVector = new Vector3(pitchValue * pitchAmount, yawValue * yawAmount, rollValue * rollAmount);
-        rotateValue = Vector3.Lerp(rotateValue, lerpVector, lerpAmount * Time.fixedDeltaTime);
-        rb.MoveRotation(rb.rotation * Quaternion.Euler(rotateValue * Time.fixedDeltaTime));
 
-        rb.velocity = transform.forward * speed * Time.fixedDeltaTime;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
-
-    void FixedUpdate() 
+    void KeyInput()
     {
         if (Input.GetButton("Pitch"))
             pitchValue = Input.GetAxisRaw("Pitch");
@@ -52,9 +38,45 @@ public class AirplaneController : MonoBehaviour
         else
             yawValue = 0;
 
-        MoveAircraft();
+        // if (Input.GetButton("Forward"))
 
-        // transform.Rotate(Vector3.up * Time.deltaTime * 3);
+    }
+
+    void MoveAirplane()
+    {
+        Vector3 lerpVector = new Vector3(
+            pitchValue * pitchAmount,
+            yawValue * yawAmount,
+            rollValue * rollAmount
+        );        
+
+        rotateValue = Vector3.Lerp(
+            rotateValue, 
+            lerpVector, 
+            lerpAmount * Time.deltaTime
+        );
+    
+        rb.MoveRotation(rb.rotation * Quaternion.Euler(rotateValue * Time.fixedDeltaTime));
+        
+        int flg = 0;
+        if(Input.GetAxisRaw("Forward") == 1.0f
+            || Input.GetAxisRaw("Pitch") == 1.0f
+            || Input.GetAxisRaw("Pitch") == -1.0f)
+            flg = 1;
+        // Debug.Log(flg);
+        rb.velocity =  flg * transform.forward * speed * Time.fixedDeltaTime;
+    }
+
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
+    void FixedUpdate() 
+    {
+        KeyInput();
+        MoveAirplane();
     }
 
 }
